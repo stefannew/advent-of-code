@@ -56,7 +56,7 @@ describe('Day 8', () => {
       });
    })
 
-   describe('Part 2', () => {
+   describe.only('Part 2', () => {
       it('should return the final value of the accumulator', () => {
          expect(runPartTwo(instructionArray)).toEqual(8)
       });

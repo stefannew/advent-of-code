@@ -17,67 +17,74 @@ export const inputToInstructionArray = (input: string): Instruction[] =>
     // @ts-ignore
     }).filter(x => x.operation !== '');
 
-const run = (instructions: Instruction[]) => {
-    const visitedOperations = [];
-    let currentPointer = 0;
-    let accumulator = 0;
+const createPossibleInstructionArrays = (instructions: Instruction[]) => {
+    const instructionsArray: Array<Instruction[]> = [];
 
-    while (currentPointer <= instructions.length) {
-        const { operation, value } = instructions[currentPointer];
-        visitedOperations.push(currentPointer);
+    instructions.forEach((instruction, index) => {
+       const copy = [...instructions];
 
-        if (operation === 'jmp') {
-            currentPointer += value;
-        }
+       if (instruction.operation === 'nop') {
+           copy[index] = {
+               ...instruction,
+               operation: 'jmp'
+           }
+       }
 
-        if (operation === 'nop') {
-            currentPointer += 1;
-        }
+       if (instruction.operation === 'jmp') {
+           copy[index] = {
+               ...instruction,
+               operation: 'nop'
+           }
+       }
 
-        if (operation === 'acc') {
-            accumulator += value;
-            currentPointer += 1;
-        }
-    }
+       instructionsArray.push(copy);
+    });
 
-    return accumulator;
+    return instructionsArray;
 }
 
-export const runPartOne = (instructions: Instruction[]) => {
+export const run = (instructions: Instruction[], returnAccOnFail = false) => {
     const visitedOperations = [];
     let currentPointer = 0;
     let accumulator = 0;
 
     while (!visitedOperations.includes(currentPointer)) {
-        const instruction = instructions[currentPointer];
+        try {
+            const instruction = instructions[currentPointer];
 
-        visitedOperations.push(currentPointer);
+            visitedOperations.push(currentPointer);
 
-        if (instruction.operation === 'acc') {
-            accumulator += instruction.value;
-            currentPointer += 1;
+            if (instruction.operation === 'acc') {
+                accumulator += instruction.value;
+                currentPointer += 1;
+            }
+
+            if (instruction.operation === 'jmp') {
+                currentPointer += instruction.value;
+            }
+
+            if (instruction.operation === 'nop') {
+                currentPointer += 1;
+            }
+        } catch (error) {
+            return accumulator;
         }
 
-        if (instruction.operation === 'jmp') {
-            currentPointer += instruction.value;
-        }
-
-        if (instruction.operation === 'nop') {
-            currentPointer += 1;
-        }
     }
 
-    return accumulator;
+    return returnAccOnFail ? accumulator : -1;
 }
 
 export const runPartTwo = (instructions: Instruction[]) => {
-    return run(instructions);
+    const arrays = createPossibleInstructionArrays(instructions);
+    const results = arrays.map(x => run(x));
+    return results.filter(x => x !== -1)[0];
 }
 
 const init = async () => {
     const input = await fetchInput(8);
     const instructions = inputToInstructionArray(input);
-    console.log('Day 8 - Part 1: Accumulator before first repeated instruction', runPartOne(instructions));
+    // console.log('Day 8 - Part 1: Accumulator before first repeated instruction', run(instructions));
     console.log('Day 8 - Part 2: Accumulator after fixing nop/jmp', runPartTwo(instructions));
 }
 
