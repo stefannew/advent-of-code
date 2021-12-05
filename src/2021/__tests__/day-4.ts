@@ -1,4 +1,4 @@
-import { getInputValues } from '../day-4';
+import { bingo, getInputValues } from '../day-4';
 
 const input = `7,4,9,5,11,17,23,2,0,14,21,24,10,16,13,6,15,25,12,22,18,20,8,19,3,26,1
 
@@ -22,7 +22,9 @@ const input = `7,4,9,5,11,17,23,2,0,14,21,24,10,16,13,6,15,25,12,22,18,20,8,19,3
 `;
 
 describe('Day 4', () => {
-	it('should do stuff', () => {
-		console.log(getInputValues(input));
-	});
+	it('should mark the numbers in each board', () => {
+		const { numbers, boards } = getInputValues(input);
+		expect(bingo(numbers, boards)).toEqual(4512);
+		expect(bingo(numbers, boards, true)).toEqual(1924);
+	})
 });
