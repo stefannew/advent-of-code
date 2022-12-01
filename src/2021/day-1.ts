@@ -27,7 +27,7 @@ const findSumIncreaseSlidingWindow = (input: number[], window: number = 3) => {
 }
 
 (async () => {
-  const input = await fetchInput(1).then(multiLineToNumberArray);
+  const input = await fetchInput(2021, 1).then(multiLineToNumberArray);
 
   console.log('Number of Depth Increases:', findNumberOfDepthIncreases(input));
   console.log('Number of Depth Increases (Sliding Window):', findNumberOfDepthIncreases(findSumIncreaseSlidingWindow(input)));

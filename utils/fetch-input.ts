@@ -3,11 +3,11 @@ import axios from 'axios';
 
 dotenv.config();
 
-const BASE_URL = 'https://adventofcode.com/2021/day';
+const BASE_URL = 'https://adventofcode.com';
 const SESSION_TOKEN = process.env.SESSION_TOKEN;
 
-export const fetchInput = async (day: number) => {
-  return axios.get<string>(`${BASE_URL}/${day}/input`, {
+export const fetchInput = async (year: number, day: number) => {
+  return axios.get<string>(`${BASE_URL}/${year}/day/${day}/input`, {
     headers: {
       Cookie: `session=${SESSION_TOKEN}`
     }
